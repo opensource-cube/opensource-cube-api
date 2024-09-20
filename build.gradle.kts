@@ -30,6 +30,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
+
+    testImplementation("org.testcontainers:mysql:1.20.1")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.1")
 }
 
 kotlin {
