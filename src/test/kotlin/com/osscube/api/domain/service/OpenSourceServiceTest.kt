@@ -12,11 +12,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
-@ActiveProfiles
 @Testcontainers
 class OpenSourceServiceTest : TestContainers() {
     @Autowired
@@ -38,10 +36,10 @@ class OpenSourceServiceTest : TestContainers() {
         val originUrl = "originUrl"
         val requestDto = OpenSourceSaveRequestDto(name, originUrl)
 
-        //when
+        // when
         val responseDto = openSourceService.saveOpenSource(requestDto)
 
-        //then
+        // then
         assertThat(responseDto.clientId)
             .hasSize(36)
         assertThat(responseDto)
