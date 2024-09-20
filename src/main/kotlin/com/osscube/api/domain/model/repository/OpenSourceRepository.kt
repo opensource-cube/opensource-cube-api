@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface OpenSourceRepository : JpaRepository<OpenSource, Long>
+interface OpenSourceRepository : JpaRepository<OpenSource, Long> {
+    fun existsByNameAndOriginUrl(name: String, originUrl: String): Boolean
+}
