@@ -54,7 +54,7 @@ class OpenSourceControllerTest : TestContainers() {
                     .content(objectMapper.writeValueAsString(request))
             )
             .andExpect { status().isCreated }
-            .andExpect(jsonPath("$.openSource.clientId").value(Matchers.isA(String::class.java), String::class.java))
+            .andExpect(jsonPath("$.openSource.openSourceId").value(Matchers.isA(String::class.java), String::class.java))
             .andExpect(jsonPath("$.openSource.name").value("name"))
             .andExpect(jsonPath("$.openSource.originUrl").value("origin url"))
     }

@@ -3,7 +3,7 @@ package com.osscube.api.domain.dto
 import com.osscube.api.domain.model.entity.OpenSource
 
 class OpenSourceSaveResponseDto(
-    val clientId: String,
+    val openSourceId: String,
     val name: String,
     val originUrl: String
 ) {

@@ -40,7 +40,7 @@ class OpenSourceServiceTest : TestContainers() {
         val responseDto = openSourceService.saveOpenSource(requestDto)
 
         // then
-        assertThat(responseDto.clientId)
+        assertThat(responseDto.openSourceId)
             .hasSize(36)
         assertThat(responseDto)
             .extracting("name", "originUrl")
