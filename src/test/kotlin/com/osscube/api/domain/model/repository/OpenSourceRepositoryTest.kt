@@ -52,4 +52,35 @@ class OpenSourceRepositoryTest : TestContainers() {
         // then
         assertThat(isExist).isTrue()
     }
+
+    @DisplayName("clientId에 해당하는 오픈소스를 조회한다.")
+    @Test
+    fun findOpenSourceByClientId() {
+        // given
+        val given = OpenSource("name", "origin url")
+        openSourceRepository.save(given)
+
+        // when
+        val openSource = openSourceRepository.findByClientId(given.clientId)
+
+        // then
+        assertThat(openSource)
+            .isNotNull
+            .extracting("id", "clientId", "name", "originUrl")
+            .contains(given.id, given.clientId, given.name, given.originUrl)
+    }
+
+    @DisplayName("clientId에 해당하는 오픈소스가 존재하지 않으면 조회할 수 없다.")
+    @Test
+    fun cannotFindOpenSourceIfClientIdNotExists() {
+        // given
+        val given = OpenSource("name", "origin url")
+        openSourceRepository.save(given)
+
+        // when
+        val openSource = openSourceRepository.findByClientId("invalid client id")
+
+        // then
+        assertThat(openSource).isNull()
+    }
 }
