@@ -3,8 +3,11 @@ package com.osscube.api.domain.service
 import com.osscube.api.config.TestContainers
 import com.osscube.api.domain.dto.OpenSourceVersionAddRequestDto
 import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
+import com.osscube.api.domain.exception.open_source_version.OpenSourceVersionAlreadyExistsException
 import com.osscube.api.domain.model.entity.OpenSource
+import com.osscube.api.domain.model.entity.OpenSourceVersion
 import com.osscube.api.domain.model.repository.OpenSourceRepository
+import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -23,8 +26,12 @@ class OpenSourceVersionServiceTest : TestContainers() {
     @Autowired
     private lateinit var openSourceRepository: OpenSourceRepository
 
+    @Autowired
+    private lateinit var openSourceVersionRepository: OpenSourceVersionRepository
+
     @BeforeEach
     fun cleansing() {
+        openSourceVersionRepository.deleteAllInBatch()
         openSourceRepository.deleteAllInBatch()
     }
 
@@ -55,5 +62,21 @@ class OpenSourceVersionServiceTest : TestContainers() {
         val requestDto = OpenSourceVersionAddRequestDto("invalid client id", "v1.0.0", null)
         assertThatThrownBy { openSourceVersionService.addNewVersion(requestDto) }
             .isInstanceOf(OpenSourceNotFoundException::class.java)
+    }
+
+    @DisplayName("오픈소스 이미 추가된 버전을 다시 추가할 수 없다.")
+    @Test
+    fun cannotAddNewVersionIfAlreadyAdded() {
+        // given
+        val openSource = OpenSource("name", "origin url")
+        openSourceRepository.save(openSource)
+
+        val openSourceVersion = OpenSourceVersion(openSource, "v1.0.0", null)
+        openSourceVersionRepository.save(openSourceVersion)
+
+        // when // then
+        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, "v1.0.0", null)
+        assertThatThrownBy { openSourceVersionService.addNewVersion(requestDto) }
+            .isInstanceOf(OpenSourceVersionAlreadyExistsException::class.java)
     }
 }
