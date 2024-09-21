@@ -1,5 +1,6 @@
 package com.osscube.api.domain.service
 
+import com.osscube.api.domain.dto.OpenSourceGetDto
 import com.osscube.api.domain.dto.OpenSourceSaveRequestDto
 import com.osscube.api.domain.dto.OpenSourceSaveResponseDto
 import com.osscube.api.domain.exception.open_source.OpenSourceAlreadyExistsException
@@ -19,5 +20,10 @@ class OpenSourceService(
         val openSource = OpenSource.of(dto)
         openSourceRepository.save(openSource)
         return OpenSourceSaveResponseDto.of(openSource)
+    }
+
+    fun getOpenSources(): List<OpenSourceGetDto> {
+        return openSourceRepository.findAll()
+            .map { OpenSourceGetDto.of(it) }
     }
 }

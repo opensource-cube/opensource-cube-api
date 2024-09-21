@@ -7,6 +7,7 @@ import com.osscube.api.domain.dto.OpenSourceSaveRequestDto
 import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsInRelativeOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -79,5 +80,29 @@ class OpenSourceControllerTest : TestContainers() {
             .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
             .andExpect(jsonPath("$.error").value("OPEN_SOURCE-001"))
             .andExpect(jsonPath("$.message").value("이미 저장된 오픈소스입니다."))
+    }
+
+    @DisplayName("오픈소스 목록을 조회한다.")
+    @Test
+    fun getOpenSources() {
+        // given
+        val given = listOf(
+            OpenSource("name1", "origin url"),
+            OpenSource("name2", "origin url"),
+            OpenSource("name3", "origin url")
+        )
+        openSourceRepository.saveAll(given)
+
+        // when // then
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders
+                    .get("/api/v1/open-sources")
+            )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.openSources").isArray)
+            .andExpect(jsonPath("$.openSources.length()").value(given.size))
+            .andExpect(jsonPath("$.openSources[*].name").value(containsInRelativeOrder("name1", "name2", "name3")))
+            .andExpect(jsonPath("$.openSources[*].originUrl").value(containsInRelativeOrder("origin url", "origin url", "origin url")))
     }
 }

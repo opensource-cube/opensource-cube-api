@@ -7,6 +7,7 @@ import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -59,5 +60,44 @@ class OpenSourceServiceTest : TestContainers() {
         // when // then
         assertThatThrownBy { openSourceService.saveOpenSource(requestDto) }
             .isInstanceOf(OpenSourceAlreadyExistsException::class.java)
+    }
+
+    @DisplayName("모든 오픈소스를 조회한다.")
+    @Test
+    fun getOpenSources() {
+        // given
+        val given = listOf(
+            OpenSource("name1", "origin url"),
+            OpenSource("name2", "origin url"),
+            OpenSource("name3", "origin url")
+        )
+        openSourceRepository.saveAll(given)
+
+        // when
+        val openSources = openSourceService.getOpenSources()
+
+        // then
+        openSources.forEach { assertThat(it.openSourceId).hasSize(36) }
+        assertThat(openSources)
+            .hasSize(3)
+            .extracting("name", "originUrl")
+            .contains(
+                tuple("name1", "origin url"),
+                tuple("name2", "origin url"),
+                tuple("name3", "origin url")
+            )
+    }
+
+    @DisplayName("오픈소스가 존재하지 않는 경우 빈 목록을 조회한다.")
+    @Test
+    fun getEmptyListIfOpenSourceNotExists() {
+        // given
+
+        // when
+        val openSources = openSourceService.getOpenSources()
+
+        // then
+        assertThat(openSources)
+            .hasSize(0)
     }
 }

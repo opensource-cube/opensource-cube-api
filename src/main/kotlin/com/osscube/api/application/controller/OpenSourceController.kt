@@ -1,10 +1,12 @@
 package com.osscube.api.application.controller
 
 import com.osscube.api.application.request.OpenSourceSaveRequest
+import com.osscube.api.application.response.OpenSourceGetResponse
 import com.osscube.api.application.response.OpenSourceSaveResponse
 import com.osscube.api.domain.dto.OpenSourceSaveRequestDto
 import com.osscube.api.domain.service.OpenSourceService
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,5 +23,12 @@ class OpenSourceController(
     fun saveOpenSource(@RequestBody request: OpenSourceSaveRequest): OpenSourceSaveResponse {
         val responseDto = openSourceService.saveOpenSource(OpenSourceSaveRequestDto.of(request))
         return OpenSourceSaveResponse(responseDto)
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    fun getOpenSources(): OpenSourceGetResponse {
+        val responseDto = openSourceService.getOpenSources()
+        return OpenSourceGetResponse(responseDto)
     }
 }
