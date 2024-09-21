@@ -87,4 +87,17 @@ class OpenSourceServiceTest : TestContainers() {
                 tuple("name3", "origin url")
             )
     }
+
+    @DisplayName("오픈소스가 존재하지 않는 경우 빈 목록을 조회한다.")
+    @Test
+    fun getEmptyListIfOpenSourceNotExists() {
+        // given
+
+        // when
+        val openSources = openSourceService.getOpenSources()
+
+        // then
+        assertThat(openSources)
+            .hasSize(0)
+    }
 }
