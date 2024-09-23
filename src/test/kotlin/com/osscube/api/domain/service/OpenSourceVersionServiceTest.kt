@@ -43,17 +43,16 @@ class OpenSourceVersionServiceTest : TestContainers() {
         openSourceRepository.save(openSource)
 
         // when
-        val version = "20240303"
-        val sourceUrl = "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz"
-        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, version, sourceUrl)
-        val responseDto = openSourceVersionService.addNewVersion(requestDto)
+        val clientId = openSource.clientId
+        val requestDto = OpenSourceVersionAddRequestDto("20240303", "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz")
+        val responseDto = openSourceVersionService.addNewVersion(clientId, requestDto)
 
         // then
         assertThat(responseDto.id)
             .hasSize(36)
         assertThat(responseDto)
             .extracting("version", "sourceUrl")
-            .contains(version, sourceUrl)
+            .contains(requestDto.version, requestDto.sourceUrl)
     }
 
     @DisplayName("오픈소스가 없으면 새로운 버전을 추가할 수 없다.")
@@ -62,8 +61,8 @@ class OpenSourceVersionServiceTest : TestContainers() {
         // given
 
         // when // then
-        val requestDto = OpenSourceVersionAddRequestDto("invalid client id", "v1.0.0", null)
-        assertThatThrownBy { openSourceVersionService.addNewVersion(requestDto) }
+        val requestDto = OpenSourceVersionAddRequestDto("v1.0.0", null)
+        assertThatThrownBy { openSourceVersionService.addNewVersion("invalid client id", requestDto) }
             .isInstanceOf(OpenSourceNotFoundException::class.java)
     }
 
@@ -80,8 +79,9 @@ class OpenSourceVersionServiceTest : TestContainers() {
         openSourceVersionRepository.save(openSourceVersion)
 
         // when // then
-        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, version, sourceUrl)
-        assertThatThrownBy { openSourceVersionService.addNewVersion(requestDto) }
+        val clientId = openSource.clientId
+        val requestDto = OpenSourceVersionAddRequestDto(version, sourceUrl)
+        assertThatThrownBy { openSourceVersionService.addNewVersion(clientId, requestDto) }
             .isInstanceOf(OpenSourceVersionAlreadyExistsException::class.java)
     }
 }

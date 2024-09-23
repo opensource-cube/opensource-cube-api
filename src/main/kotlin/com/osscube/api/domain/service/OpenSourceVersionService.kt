@@ -14,8 +14,8 @@ class OpenSourceVersionService(
     private val openSourceRepository: OpenSourceRepository,
     private val openSourceVersionRepository: OpenSourceVersionRepository
 ) {
-    fun addNewVersion(requestDto: OpenSourceVersionAddRequestDto): OpenSourceVersionAddResponseDto {
-        val openSource = openSourceRepository.findByClientId(requestDto.openSourceId) ?: throw OpenSourceNotFoundException()
+    fun addNewVersion(clientId: String, requestDto: OpenSourceVersionAddRequestDto): OpenSourceVersionAddResponseDto {
+        val openSource = openSourceRepository.findByClientId(clientId) ?: throw OpenSourceNotFoundException()
         if (openSourceVersionRepository.existsByOpenSourceAndVersion(openSource, requestDto.version)) {
             throw OpenSourceVersionAlreadyExistsException()
         }
