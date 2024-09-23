@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OpenSourceRepository : JpaRepository<OpenSource, Long> {
     fun existsByNameAndOriginUrl(name: String, originUrl: String): Boolean
+
+    fun findByClientId(clientId: String): OpenSource?
 }

@@ -1,6 +1,5 @@
 package com.osscube.api.domain.exception.errorCode
 
-enum class OpenSourceErrorCode {
-    NOT_FOUND,
+enum class OpenSourceVersionErrorCode {
     ALREADY_EXISTS
 }

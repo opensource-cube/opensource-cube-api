@@ -78,7 +78,7 @@ class OpenSourceControllerTest : TestContainers() {
             )
             .andExpect(status().isConflict)
             .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
-            .andExpect(jsonPath("$.error").value("OPEN_SOURCE-001"))
+            .andExpect(jsonPath("$.error").value("OPEN_SOURCE-002"))
             .andExpect(jsonPath("$.message").value("이미 저장된 오픈소스입니다."))
     }
 
