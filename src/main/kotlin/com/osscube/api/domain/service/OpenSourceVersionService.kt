@@ -20,7 +20,7 @@ class OpenSourceVersionService(
             throw OpenSourceVersionAlreadyExistsException()
         }
 
-        val openSourceVersion = OpenSourceVersion(openSource, requestDto.version, null)
+        val openSourceVersion = OpenSourceVersion(openSource, requestDto.version, requestDto.sourceUrl)
         openSourceVersionRepository.save(openSourceVersion)
 
         return OpenSourceVersionAddResponseDto.of(openSourceVersion)

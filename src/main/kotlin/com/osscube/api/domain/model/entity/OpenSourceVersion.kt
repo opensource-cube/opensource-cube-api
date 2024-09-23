@@ -23,7 +23,7 @@ class OpenSourceVersion(
     @Column(nullable = false)
     val version: String,
 
-    val sourcePath: String?
+    val sourceUrl: String?
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -39,18 +39,21 @@ class OpenSourceVersionServiceTest : TestContainers() {
     @Test
     fun addNewVersion() {
         // given
-        val openSource = OpenSource("name", "origin url")
+        val openSource = OpenSource("JSON-java", "https://github.com/stleary/JSON-java")
         openSourceRepository.save(openSource)
 
         // when
-        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, "v1.0.0", null)
+        val version = "20240303"
+        val sourceUrl = "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz"
+        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, version, sourceUrl)
         val responseDto = openSourceVersionService.addNewVersion(requestDto)
 
         // then
         assertThat(responseDto.id)
             .hasSize(36)
-        assertThat(responseDto.version)
-            .isEqualTo("v1.0.0")
+        assertThat(responseDto)
+            .extracting("version", "sourceUrl")
+            .contains(version, sourceUrl)
     }
 
     @DisplayName("오픈소스가 없으면 새로운 버전을 추가할 수 없다.")
@@ -68,14 +71,16 @@ class OpenSourceVersionServiceTest : TestContainers() {
     @Test
     fun cannotAddNewVersionIfAlreadyAdded() {
         // given
-        val openSource = OpenSource("name", "origin url")
+        val openSource = OpenSource("JSON-java", "https://github.com/stleary/JSON-java")
         openSourceRepository.save(openSource)
 
-        val openSourceVersion = OpenSourceVersion(openSource, "v1.0.0", null)
+        val version = "20240303"
+        val sourceUrl = "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz"
+        val openSourceVersion = OpenSourceVersion(openSource, version, sourceUrl)
         openSourceVersionRepository.save(openSourceVersion)
 
         // when // then
-        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, "v1.0.0", null)
+        val requestDto = OpenSourceVersionAddRequestDto(openSource.clientId, version, sourceUrl)
         assertThatThrownBy { openSourceVersionService.addNewVersion(requestDto) }
             .isInstanceOf(OpenSourceVersionAlreadyExistsException::class.java)
     }
