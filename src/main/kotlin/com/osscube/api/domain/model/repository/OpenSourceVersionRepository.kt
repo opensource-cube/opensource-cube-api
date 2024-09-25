@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OpenSourceVersionRepository : JpaRepository<OpenSourceVersion, Long> {
     fun existsByOpenSourceAndVersion(openSource: OpenSource, version: String): Boolean
+
+    fun findAllByOpenSource(openSource: OpenSource): List<OpenSourceVersion>
 }
