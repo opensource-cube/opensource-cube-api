@@ -104,7 +104,7 @@ class OpenSourceVersionServiceTest : TestContainers() {
         val openSourceVersions = openSourceVersionService.getVersions(openSource.clientId)
 
         // then
-        openSourceVersions.forEach { version -> assertThat(version.openSourceId).hasSize(36) }
+        openSourceVersions.forEach { version -> assertThat(version.id).hasSize(36) }
         assertThat(openSourceVersions)
             .hasSize(3)
             .extracting("version", "sourceUrl")

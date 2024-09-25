@@ -3,7 +3,7 @@ package com.osscube.api.domain.dto
 import com.osscube.api.domain.model.entity.OpenSourceVersion
 
 class OpenSourceVersionGetResponseDto(
-    val openSourceId: String,
+    val id: String,
     val version: String,
     val sourceUrl: String?
 ) {
