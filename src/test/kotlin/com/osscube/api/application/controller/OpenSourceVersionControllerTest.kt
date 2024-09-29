@@ -8,6 +8,7 @@ import com.osscube.api.domain.model.entity.OpenSourceVersion
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -112,5 +113,48 @@ class OpenSourceVersionControllerTest : TestContainers() {
             .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
             .andExpect(jsonPath("$.error").value("OPEN_SOURCE_VERSION-001"))
             .andExpect(jsonPath("$.message").value("이미 추가된 오픈소스 버전입니다."))
+    }
+
+    @DisplayName("openSourceId에 해당하는 모든 버전을 조회한다.")
+    @Test
+    fun getVersions() {
+        // given
+        val openSource = OpenSource("JSON-java", "https://github.com/stleary/JSON-java")
+        openSourceRepository.save(openSource)
+
+        val givenVersions = listOf(
+            OpenSourceVersion(openSource, "20240303", "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz"),
+            OpenSourceVersion(openSource, "20240205", "https://github.com/stleary/JSON-java/archive/refs/tags/20240205.tar.gz"),
+            OpenSourceVersion(openSource, "20231013", null)
+        )
+        openSourceVersionRepository.saveAll(givenVersions)
+
+        // when // then
+        val openSourceId = openSource.clientId
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/v1/open-sources/{openSourceId}/versions", openSourceId)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.openSourceVersions").isArray)
+            .andExpect(jsonPath("$.openSourceVersions.length()").value(givenVersions.size))
+            .andExpect(jsonPath("$.openSourceVersions[*].id").value(containsInAnyOrder(givenVersions[0].clientId, givenVersions[1].clientId, givenVersions[2].clientId)))
+            .andExpect(jsonPath("$.openSourceVersions[*].version").value(containsInAnyOrder("20240303", "20240205", "20231013")))
+            .andExpect(jsonPath("$.openSourceVersions[*].sourceUrl").value(containsInAnyOrder("https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz", "https://github.com/stleary/JSON-java/archive/refs/tags/20240205.tar.gz", null)))
+    }
+
+    @DisplayName("오픈소스가 존재하지 않으면 버전 목록을 조회할 수 없다.")
+    @Test
+    fun test() {
+        // given
+
+        // when // then
+        val openSourceId = "invalid open source id"
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/v1/open-sources/{openSourceId}/versions", openSourceId)
+        )
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+            .andExpect(jsonPath("$.error").value("OPEN_SOURCE-001"))
+            .andExpect(jsonPath("$.message").value("오픈소스를 찾을 수 없습니다."))
     }
 }
