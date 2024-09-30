@@ -111,7 +111,7 @@ class OpenSourceVersionControllerTest : TestContainers() {
         )
             .andExpect(status().isConflict)
             .andExpect(jsonPath("$.status").value(HttpStatus.CONFLICT.value()))
-            .andExpect(jsonPath("$.error").value("OPEN_SOURCE_VERSION-001"))
+            .andExpect(jsonPath("$.error").value("OPEN_SOURCE_VERSION-002"))
             .andExpect(jsonPath("$.message").value("이미 추가된 오픈소스 버전입니다."))
     }
 

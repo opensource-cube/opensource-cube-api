@@ -5,6 +5,7 @@ import com.osscube.api.domain.dto.OpenSourceVersionAddResponseDto
 import com.osscube.api.domain.dto.OpenSourceVersionGetResponseDto
 import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
 import com.osscube.api.domain.exception.open_source_version.OpenSourceVersionAlreadyExistsException
+import com.osscube.api.domain.exception.open_source_version.OpenSourceVersionNotFoundException
 import com.osscube.api.domain.model.entity.OpenSourceVersion
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
@@ -31,5 +32,11 @@ class OpenSourceVersionService(
         val openSource = openSourceRepository.findByClientId(clientId) ?: throw OpenSourceNotFoundException()
         return openSourceVersionRepository.findAllByOpenSource(openSource)
             .map { OpenSourceVersionGetResponseDto.of(it) }
+    }
+
+    fun getVersion(openSourceId: String, openSourceVersionId: String): OpenSourceVersionGetResponseDto {
+        val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
+        val openSourceVersion = openSourceVersionRepository.findByOpenSourceAndClientId(openSource, openSourceVersionId) ?: throw OpenSourceVersionNotFoundException()
+        return OpenSourceVersionGetResponseDto.of(openSourceVersion)
     }
 }

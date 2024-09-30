@@ -3,6 +3,7 @@ package com.osscube.api.application.controller
 import com.osscube.api.application.request.OpenSourceVersionAddRequest
 import com.osscube.api.application.response.OpenSourceVersionAddResponse
 import com.osscube.api.application.response.OpenSourceVersionGetResponse
+import com.osscube.api.application.response.OpenSourceVersionsGetResponse
 import com.osscube.api.domain.dto.OpenSourceVersionAddRequestDto
 import com.osscube.api.domain.service.OpenSourceVersionService
 import org.springframework.http.HttpStatus
@@ -28,8 +29,14 @@ class OpenSourceVersionController(
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getVersions(@PathVariable openSourceId: String): OpenSourceVersionGetResponse {
+    fun getVersions(@PathVariable openSourceId: String): OpenSourceVersionsGetResponse {
         val responseDto = openSourceVersionService.getVersions(openSourceId)
+        return OpenSourceVersionsGetResponse(responseDto)
+    }
+
+    @GetMapping("/{openSourceVersionId}")
+    fun getVersion(@PathVariable openSourceId: String, @PathVariable openSourceVersionId: String): OpenSourceVersionGetResponse {
+        val responseDto = openSourceVersionService.getVersion(openSourceId, openSourceVersionId)
         return OpenSourceVersionGetResponse(responseDto)
     }
 }
