@@ -8,23 +8,23 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Index
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 
 @Entity
 @Table(
-    indexes = [Index(name = "open_source_version_idx", columnList = "client_id")],
-    uniqueConstraints = [UniqueConstraint(name = "open_source_version_unique_constraint", columnNames = ["open_source_id", "version"])]
+    indexes = [Index(name = "license_idx", columnList = "clientId")],
+    uniqueConstraints = [UniqueConstraint(name = "license_unique_constraint", columnNames = ["open_source_version_id", "type"])]
 )
-class OpenSourceVersion(
+class License(
     @ManyToOne(optional = false)
-    val openSource: OpenSource,
+    val openSourceVersion: OpenSourceVersion,
 
     @Column(nullable = false)
-    val version: String,
+    val type: String,
 
-    val sourceUrl: String?
+    @Column(nullable = false)
+    val path: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,4 @@ class OpenSourceVersion(
 
     @Column(length = 36, nullable = false)
     val clientId: String = UUIDGenerator.generateId()
-
-    @OneToMany(mappedBy = "openSourceVersion")
-    val licenses = mutableListOf<License>()
 }
