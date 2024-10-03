@@ -13,6 +13,7 @@ object FileUtil {
         if (!allowedMimeTypes.contains(mimeType)) {
             throw InvalidFileException()
         }
+        dst.mkdirs()
         multipartFile.transferTo(dst)
     }
 }

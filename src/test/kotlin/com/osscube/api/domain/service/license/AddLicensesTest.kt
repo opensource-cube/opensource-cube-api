@@ -2,6 +2,7 @@ package com.osscube.api.domain.service.license
 
 import com.osscube.api.config.TestContainers
 import com.osscube.api.domain.dto.LicenseAddRequestDto
+import com.osscube.api.domain.exception.file.InvalidFileException
 import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.entity.OpenSourceVersion
 import com.osscube.api.domain.model.repository.LicenseRepository
@@ -13,6 +14,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -98,5 +100,26 @@ class AddLicensesTest : TestContainers() {
                 tuple(licenseDtos[0].type, "/${openSource.name}_${openSourceVersion.id}/${openSourceVersion.version}/${licenseDtos[0].file.originalFilename}"),
                 tuple(licenseDtos[1].type, "/${openSource.name}_${openSourceVersion.id}/${openSourceVersion.version}/${licenseDtos[1].file.originalFilename}")
             )
+    }
+
+    @DisplayName("라이선스 파일이 텍스트 파일이 아니면 라이선스 정보를 저장할 수 없다.")
+    @Test
+    fun cannotAddLicensesIfLicenseIsNotTextFile() {
+        // given
+        val openSource = OpenSource("JSON-java", "https://github.com/stleary/JSON-java")
+        openSourceRepository.save(openSource)
+
+        val version = "20240303"
+        val sourceUrl = "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz"
+        val openSourceVersion = OpenSourceVersion(openSource, version, sourceUrl)
+        openSourceVersionRepository.save(openSourceVersion)
+
+        // when // then
+        val licenseDtos = listOf(
+            LicenseAddRequestDto("MIT", MockMultipartFile("file", "source.jar", MediaType.APPLICATION_OCTET_STREAM_VALUE, "source jar".toByteArray())),
+            LicenseAddRequestDto("APACHE2.0", MockMultipartFile("file", "license2.txt", MediaType.TEXT_PLAIN_VALUE, "APACHE2.0 License".toByteArray()))
+        )
+        assertThatThrownBy { licenseService.addLicenses(openSourceVersion, licenseDtos) }
+            .isInstanceOf(InvalidFileException::class.java)
     }
 }
