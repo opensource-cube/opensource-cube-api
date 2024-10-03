@@ -23,7 +23,7 @@ class OpenSourceVersionController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun addNewVersion(@PathVariable openSourceId: String, @RequestBody request: OpenSourceVersionAddRequest): OpenSourceVersionAddResponse {
-        val responseDto = openSourceVersionService.addNewVersion(openSourceId, OpenSourceVersionAddRequestDto.of(request))
+        val responseDto = openSourceVersionService.addNewVersion(openSourceId, OpenSourceVersionAddRequestDto.of(request), emptyList())
         return OpenSourceVersionAddResponse(responseDto)
     }
 

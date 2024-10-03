@@ -3,6 +3,7 @@ package com.osscube.api.domain.model.entity
 import com.osscube.api.utils.UUIDGenerator
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -33,6 +34,6 @@ class OpenSourceVersion(
     @Column(length = 36, nullable = false)
     val clientId: String = UUIDGenerator.generateId()
 
-    @OneToMany(mappedBy = "openSourceVersion")
+    @OneToMany(mappedBy = "openSourceVersion", fetch = FetchType.EAGER)
     val licenses = mutableListOf<License>()
 }

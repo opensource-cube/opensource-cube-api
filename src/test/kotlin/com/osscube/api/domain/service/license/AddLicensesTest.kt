@@ -97,8 +97,8 @@ class AddLicensesTest : TestContainers() {
             .hasSize(licenseDtos.size)
             .extracting("type", "path")
             .contains(
-                tuple(licenseDtos[0].type, "/${openSource.name}_${openSourceVersion.id}/${openSourceVersion.version}/${licenseDtos[0].file.originalFilename}"),
-                tuple(licenseDtos[1].type, "/${openSource.name}_${openSourceVersion.id}/${openSourceVersion.version}/${licenseDtos[1].file.originalFilename}")
+                tuple(licenseDtos[0].type, "/${openSource.name}_${openSource.id}/${openSourceVersion.version}/${licenseDtos[0].file.originalFilename}"),
+                tuple(licenseDtos[1].type, "/${openSource.name}_${openSource.id}/${openSourceVersion.version}/${licenseDtos[1].file.originalFilename}")
             )
     }
 

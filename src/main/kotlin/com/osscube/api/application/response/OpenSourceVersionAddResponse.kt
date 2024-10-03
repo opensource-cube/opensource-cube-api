@@ -1,7 +1,7 @@
 package com.osscube.api.application.response
 
-import com.osscube.api.domain.dto.OpenSourceVersionAddResponseDto
+import com.osscube.api.domain.dto.OpenSourceVersionAddNewVersionResponseDto
 
 class OpenSourceVersionAddResponse(
-    val openSourceVersion: OpenSourceVersionAddResponseDto
+    val openSourceVersion: OpenSourceVersionAddNewVersionResponseDto
 )
