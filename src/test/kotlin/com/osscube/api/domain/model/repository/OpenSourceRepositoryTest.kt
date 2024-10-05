@@ -3,20 +3,18 @@ package com.osscube.api.domain.model.repository
 import com.osscube.api.config.TestContainers
 import com.osscube.api.domain.model.entity.OpenSource
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
-@Testcontainers
 class OpenSourceRepositoryTest : TestContainers() {
     @Autowired
     private lateinit var openSourceRepository: OpenSourceRepository
 
-    @BeforeEach
+    @AfterEach
     fun cleansing() {
         openSourceRepository.deleteAllInBatch()
     }

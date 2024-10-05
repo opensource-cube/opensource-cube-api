@@ -5,15 +5,13 @@ import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.entity.OpenSourceVersion
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
-@Testcontainers
 class OpenSourceVersionRepositoryTest : TestContainers() {
     @Autowired
     private lateinit var openSourceRepository: OpenSourceRepository
@@ -21,7 +19,7 @@ class OpenSourceVersionRepositoryTest : TestContainers() {
     @Autowired
     private lateinit var openSourceVersionRepository: OpenSourceVersionRepository
 
-    @BeforeEach
+    @AfterEach
     fun cleansing() {
         openSourceVersionRepository.deleteAllInBatch()
         openSourceRepository.deleteAllInBatch()

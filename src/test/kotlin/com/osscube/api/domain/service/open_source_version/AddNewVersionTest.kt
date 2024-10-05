@@ -19,18 +19,16 @@ import io.mockk.unmockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
-@Testcontainers
 class AddNewVersionTest : TestContainers() {
     @Autowired
     private lateinit var openSourceVersionService: OpenSourceVersionService
@@ -58,7 +56,7 @@ class AddNewVersionTest : TestContainers() {
         }
     }
 
-    @BeforeEach
+    @AfterEach
     fun cleansing() {
         licenseRepository.deleteAllInBatch()
         openSourceVersionRepository.deleteAllInBatch()

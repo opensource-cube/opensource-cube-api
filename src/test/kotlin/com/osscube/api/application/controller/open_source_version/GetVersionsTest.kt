@@ -6,7 +6,7 @@ import com.osscube.api.domain.model.entity.OpenSourceVersion
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,11 +16,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.testcontainers.junit.jupiter.Testcontainers
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
 class GetVersionsTest : TestContainers() {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -31,7 +30,7 @@ class GetVersionsTest : TestContainers() {
     @Autowired
     private lateinit var openSourceVersionRepository: OpenSourceVersionRepository
 
-    @BeforeEach
+    @AfterEach
     fun cleansing() {
         openSourceVersionRepository.deleteAllInBatch()
         openSourceRepository.deleteAllInBatch()

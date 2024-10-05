@@ -32,8 +32,8 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.12")
     implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
-    testImplementation("org.testcontainers:mysql:1.20.1")
-    testImplementation("org.testcontainers:junit-jupiter:1.20.1")
+    testImplementation("org.testcontainers:mysql:1.20.2")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.2")
 }
 
 kotlin {
