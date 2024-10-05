@@ -14,8 +14,8 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,11 +29,9 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
 class AddNewVersionTest : TestContainers() {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -61,7 +59,7 @@ class AddNewVersionTest : TestContainers() {
         }
     }
 
-    @BeforeEach
+    @AfterEach
     fun cleansing() {
         licenseRepository.deleteAllInBatch()
         openSourceVersionRepository.deleteAllInBatch()

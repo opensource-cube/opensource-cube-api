@@ -8,7 +8,7 @@ import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsInRelativeOrder
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,11 +20,9 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
 class OpenSourceControllerTest : TestContainers() {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -35,7 +33,7 @@ class OpenSourceControllerTest : TestContainers() {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @BeforeEach
+    @AfterEach
     fun cleansing() {
         openSourceRepository.deleteAllInBatch()
     }
