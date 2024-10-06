@@ -1,14 +1,13 @@
 package com.osscube.api.domain.dto
 
-import com.osscube.api.domain.model.entity.OpenSourceVersion
-
 class OpenSourceVersionGetResponseDto(
     val id: String,
     val version: String,
-    val sourceUrl: String?
+    val sourceUrl: String?,
+    val licenses: List<LicenseGetResponseDto>
 ) {
     companion object {
-        fun of(openSourceVersion: OpenSourceVersion) =
-            OpenSourceVersionGetResponseDto(openSourceVersion.clientId, openSourceVersion.version, openSourceVersion.sourceUrl)
+        fun of(id: String, version: String, sourceUrl: String?, licenses: List<LicenseGetResponseDto>) =
+            OpenSourceVersionGetResponseDto(id, version, sourceUrl, licenses)
     }
 }
