@@ -1,10 +1,13 @@
 package com.osscube.api.application.controller.open_source_version
 
 import com.osscube.api.config.TestContainers
+import com.osscube.api.domain.model.entity.License
 import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.entity.OpenSourceVersion
+import com.osscube.api.domain.model.repository.LicenseRepository
 import com.osscube.api.domain.model.repository.OpenSourceRepository
 import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -29,8 +32,12 @@ class GetVersionTest : TestContainers() {
     @Autowired
     private lateinit var openSourceVersionRepository: OpenSourceVersionRepository
 
+    @Autowired
+    private lateinit var licenseRepository: LicenseRepository
+
     @AfterEach
     fun cleansing() {
+        licenseRepository.deleteAllInBatch()
         openSourceVersionRepository.deleteAllInBatch()
         openSourceRepository.deleteAllInBatch()
     }
@@ -45,6 +52,13 @@ class GetVersionTest : TestContainers() {
         val openSourceVersion = OpenSourceVersion(openSource, "20240303", "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz")
         openSourceVersionRepository.save(openSourceVersion)
 
+        val licenses = listOf(
+            License(openSourceVersion, "APACHE2.0", "temp"),
+            License(openSourceVersion, "MIT", "temp")
+        ).sortedBy { it.type }
+        licenseRepository.saveAll(licenses)
+        openSourceVersion.licenses.addAll(licenses)
+
         // when // then
         val openSourceId = openSource.clientId
         val openSourceVersionId = openSourceVersion.clientId
@@ -55,6 +69,10 @@ class GetVersionTest : TestContainers() {
             .andExpect(jsonPath("$.openSourceVersion.id").value(openSourceVersion.clientId))
             .andExpect(jsonPath("$.openSourceVersion.version").value(openSourceVersion.version))
             .andExpect(jsonPath("$.openSourceVersion.sourceUrl").value(openSourceVersion.sourceUrl))
+            .andExpect(jsonPath("$.openSourceVersion.licenses[0].id").value(Matchers.isA(String::class.java), String::class.java))
+            .andExpect(jsonPath("$.openSourceVersion.licenses[0].type").value(licenses[0].type))
+            .andExpect(jsonPath("$.openSourceVersion.licenses[1].id").value(Matchers.isA(String::class.java), String::class.java))
+            .andExpect(jsonPath("$.openSourceVersion.licenses[1].type").value(licenses[1].type))
     }
 
     @DisplayName("오픈소스 id에 해당하는 오픈소스가 존재하지 않으면 특정 버전의 오픈소스를 조회할 수 없다.")
@@ -66,6 +84,13 @@ class GetVersionTest : TestContainers() {
 
         val openSourceVersion = OpenSourceVersion(openSource, "20240303", "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz")
         openSourceVersionRepository.save(openSourceVersion)
+
+        val licenses = listOf(
+            License(openSourceVersion, "APACHE2.0", "temp"),
+            License(openSourceVersion, "MIT", "temp")
+        ).sortedBy { it.type }
+        licenseRepository.saveAll(licenses)
+        openSourceVersion.licenses.addAll(licenses)
 
         // when // then
         val invalidOpenSourceId = "invalid open source id"
@@ -88,6 +113,13 @@ class GetVersionTest : TestContainers() {
 
         val openSourceVersion = OpenSourceVersion(openSource, "20240303", "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz")
         openSourceVersionRepository.save(openSourceVersion)
+
+        val licenses = listOf(
+            License(openSourceVersion, "APACHE2.0", "temp"),
+            License(openSourceVersion, "MIT", "temp")
+        ).sortedBy { it.type }
+        licenseRepository.saveAll(licenses)
+        openSourceVersion.licenses.addAll(licenses)
 
         // when // then
         val openSourceId = openSource.clientId
