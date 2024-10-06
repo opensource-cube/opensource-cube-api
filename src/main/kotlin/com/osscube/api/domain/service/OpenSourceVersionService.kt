@@ -1,9 +1,11 @@
 package com.osscube.api.domain.service
 
 import com.osscube.api.domain.dto.LicenseAddRequestDto
-import com.osscube.api.domain.dto.OpenSourceVersionAddRequestDto
+import com.osscube.api.domain.dto.LicenseGetResponseDto
 import com.osscube.api.domain.dto.OpenSourceVersionAddNewVersionResponseDto
+import com.osscube.api.domain.dto.OpenSourceVersionAddRequestDto
 import com.osscube.api.domain.dto.OpenSourceVersionGetResponseDto
+import com.osscube.api.domain.dto.OpenSourceVersionsGetResponseDto
 import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
 import com.osscube.api.domain.exception.open_source_version.OpenSourceVersionAlreadyExistsException
 import com.osscube.api.domain.exception.open_source_version.OpenSourceVersionNotFoundException
@@ -34,15 +36,16 @@ class OpenSourceVersionService(
         return OpenSourceVersionAddNewVersionResponseDto.of(openSourceVersion, licenses)
     }
 
-    fun getVersions(clientId: String): List<OpenSourceVersionGetResponseDto> {
-        val openSource = openSourceRepository.findByClientId(clientId) ?: throw OpenSourceNotFoundException()
+    fun getVersions(openSourceId: String): List<OpenSourceVersionsGetResponseDto> {
+        val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
         return openSourceVersionRepository.findAllByOpenSource(openSource)
-            .map { OpenSourceVersionGetResponseDto.of(it) }
+            .map { OpenSourceVersionsGetResponseDto.of(it) }
     }
 
     fun getVersion(openSourceId: String, openSourceVersionId: String): OpenSourceVersionGetResponseDto {
         val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
         val openSourceVersion = openSourceVersionRepository.findByOpenSourceAndClientId(openSource, openSourceVersionId) ?: throw OpenSourceVersionNotFoundException()
-        return OpenSourceVersionGetResponseDto.of(openSourceVersion)
+        val licenses = openSourceVersion.licenses.map { LicenseGetResponseDto.of(it) }.sortedBy { it.type }
+        return OpenSourceVersionGetResponseDto.of(openSourceVersion.clientId, openSourceVersion.version, openSourceVersion.sourceUrl, licenses)
     }
 }
