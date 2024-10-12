@@ -9,6 +9,7 @@ import com.osscube.api.domain.dto.OpenSourceSaveRequestDto
 import com.osscube.api.domain.dto.OpenSourceUpdateRequestDto
 import com.osscube.api.domain.service.OpenSourceService
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -42,5 +43,11 @@ class OpenSourceController(
     fun updateOpenSource(@PathVariable openSourceId: String, @RequestBody request: OpenSourceUpdateRequest): OpenSourceUpdateResponse {
         val responseDto = openSourceService.updateOpenSource(openSourceId, OpenSourceUpdateRequestDto.of(request))
         return OpenSourceUpdateResponse.of(responseDto)
+    }
+
+    @DeleteMapping("/{openSourceId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteOpenSource(@PathVariable openSourceId: String) {
+        openSourceService.deleteOpenSource(openSourceId)
     }
 }

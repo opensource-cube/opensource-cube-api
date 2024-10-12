@@ -2,6 +2,7 @@ package com.osscube.api.application.exception
 
 import com.osscube.api.common.response.ErrorResponse
 import com.osscube.api.domain.exception.open_source.OpenSourceAlreadyExistsException
+import com.osscube.api.domain.exception.open_source.OpenSourceContainsVersionException
 import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
 import com.osscube.api.domain.exception.upper.OpenSourceException
 import org.springframework.core.Ordered
@@ -19,7 +20,7 @@ class OpenSourceExceptionHandler {
     fun handleOpenSourceNotFoundException(exception: OpenSourceException) =
         ErrorResponse(exception.status, exception.errorCode, exception.message!!)
 
-    @ExceptionHandler(OpenSourceAlreadyExistsException::class)
+    @ExceptionHandler(OpenSourceAlreadyExistsException::class, OpenSourceContainsVersionException::class)
     @ResponseStatus(HttpStatus.CONFLICT)
     fun handleOpenSourceAlreadyExistException(exception: OpenSourceException) =
         ErrorResponse(exception.status, exception.errorCode, exception.message!!)

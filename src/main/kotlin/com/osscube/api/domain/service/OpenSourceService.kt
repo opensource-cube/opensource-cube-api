@@ -6,14 +6,17 @@ import com.osscube.api.domain.dto.OpenSourceSaveResponseDto
 import com.osscube.api.domain.dto.OpenSourceUpdateRequestDto
 import com.osscube.api.domain.dto.OpenSourceUpdateResponseDto
 import com.osscube.api.domain.exception.open_source.OpenSourceAlreadyExistsException
+import com.osscube.api.domain.exception.open_source.OpenSourceContainsVersionException
 import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
 import com.osscube.api.domain.model.entity.OpenSource
 import com.osscube.api.domain.model.repository.OpenSourceRepository
+import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
 import org.springframework.stereotype.Service
 
 @Service
 class OpenSourceService(
-    private val openSourceRepository: OpenSourceRepository
+    private val openSourceRepository: OpenSourceRepository,
+    private val openSourceVersionRepository: OpenSourceVersionRepository
 ) {
     fun saveOpenSource(dto: OpenSourceSaveRequestDto): OpenSourceSaveResponseDto {
         if (openSourceRepository.existsByNameAndOriginUrl(dto.name, dto.originUrl)) {
@@ -37,5 +40,13 @@ class OpenSourceService(
         }
         openSource.update(requestDto.name, requestDto.originUrl)
         return OpenSourceUpdateResponseDto.of(openSourceId, requestDto)
+    }
+
+    fun deleteOpenSource(openSourceId: String) {
+        val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
+        if (openSourceVersionRepository.existsByOpenSource(openSource)) {
+            throw OpenSourceContainsVersionException()
+        }
+        openSourceRepository.delete(openSource)
     }
 }

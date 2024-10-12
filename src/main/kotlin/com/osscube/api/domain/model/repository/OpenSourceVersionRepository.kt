@@ -12,4 +12,6 @@ interface OpenSourceVersionRepository : JpaRepository<OpenSourceVersion, Long> {
     fun findAllByOpenSource(openSource: OpenSource): List<OpenSourceVersion>
 
     fun findByOpenSourceAndClientId(openSource: OpenSource, clientId: String): OpenSourceVersion?
+
+    fun existsByOpenSource(openSource: OpenSource): Boolean
 }
