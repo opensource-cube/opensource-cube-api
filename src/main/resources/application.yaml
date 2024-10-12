@@ -9,6 +9,10 @@ server:
 spring:
   application:
     name: ${APPLICATION_NAME}
+  sql:
+    init:
+      mode: never
+      schema-locations: classpath:mysql_conf/schema.sql
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

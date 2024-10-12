@@ -18,9 +18,9 @@ import jakarta.persistence.UniqueConstraint
 )
 class OpenSource(
     @Column(nullable = false)
-    val name: String,
+    var name: String,
     @Column(nullable = false)
-    val originUrl: String
+    var originUrl: String
 ) {
     @Column(length = 36, nullable = false)
     val clientId: String = UUIDGenerator.generateId()
@@ -32,5 +32,10 @@ class OpenSource(
     companion object {
         fun of(dto: OpenSourceSaveRequestDto) =
             OpenSource(dto.name, dto.originUrl)
+    }
+
+    fun update(name: String, originUrl: String) {
+        this.name = name
+        this.originUrl = originUrl
     }
 }

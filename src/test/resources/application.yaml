@@ -1,11 +1,11 @@
 spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mysql:8://open_source_cube
+    url: jdbc:tc:mysql:8://open_source_cube?TC_INITSCRIPT=mysql_conf/schema.sql
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
