@@ -29,7 +29,7 @@ class OpenSourceService(
     }
 
     fun getOpenSources(): List<OpenSourceGetDto> {
-        return openSourceRepository.findAll()
+        return openSourceRepository.findAllByOrderByName()
             .map { OpenSourceGetDto.of(it) }
     }
 
