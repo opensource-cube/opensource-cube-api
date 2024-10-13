@@ -25,14 +25,19 @@ class GetOpenSourcesTest : TestContainers() {
         openSourceRepository.deleteAllInBatch()
     }
 
-    @DisplayName("모든 오픈소스를 조회한다.")
+    @DisplayName("모든 오픈소스를 오픈소스명을 기준으로 정렬하여 조회한다.")
     @Test
-    fun getOpenSources() {
+    fun `get open sources order by name`() {
         // given
         val given = listOf(
-            OpenSource("name1", "origin url"),
-            OpenSource("name2", "origin url"),
-            OpenSource("name3", "origin url")
+            OpenSource("JSON-java", "https://github.com/stleary/JSON-java"),
+            OpenSource("openssl", "https://github.com/openssl/openssl"),
+            OpenSource("spring-boot", "https://github.com/spring-projects/spring-boot"),
+            OpenSource("openssh", "https://github.com/openssh"),
+            OpenSource("xz", "https://github.com/tukaani-project/xz"),
+            OpenSource("vscode", "https://github.com/microsoft/vscode"),
+            OpenSource("jsoncpp", "https://github.com/open-source-parsers/jsoncpp"),
+            OpenSource("googletest", "https://github.com/google/googletest")
         )
         openSourceRepository.saveAll(given)
 
@@ -40,27 +45,19 @@ class GetOpenSourcesTest : TestContainers() {
         val openSources = openSourceService.getOpenSources()
 
         // then
-        openSources.forEach { assertThat(it.openSourceId).hasSize(36) }
+        val orderedOpenSources = given.sortedBy { it.name }
         assertThat(openSources)
-            .hasSize(3)
-            .extracting("name", "originUrl")
+            .hasSize(given.size)
+            .extracting("openSourceId", "name", "originUrl")
             .contains(
-                tuple("name1", "origin url"),
-                tuple("name2", "origin url"),
-                tuple("name3", "origin url")
+                tuple(orderedOpenSources[0].clientId, orderedOpenSources[0].name, orderedOpenSources[0].originUrl),
+                tuple(orderedOpenSources[1].clientId, orderedOpenSources[1].name, orderedOpenSources[1].originUrl),
+                tuple(orderedOpenSources[2].clientId, orderedOpenSources[2].name, orderedOpenSources[2].originUrl),
+                tuple(orderedOpenSources[3].clientId, orderedOpenSources[3].name, orderedOpenSources[3].originUrl),
+                tuple(orderedOpenSources[4].clientId, orderedOpenSources[4].name, orderedOpenSources[4].originUrl),
+                tuple(orderedOpenSources[5].clientId, orderedOpenSources[5].name, orderedOpenSources[5].originUrl),
+                tuple(orderedOpenSources[6].clientId, orderedOpenSources[6].name, orderedOpenSources[6].originUrl),
+                tuple(orderedOpenSources[7].clientId, orderedOpenSources[7].name, orderedOpenSources[7].originUrl),
             )
-    }
-
-    @DisplayName("오픈소스가 존재하지 않는 경우 빈 목록을 조회한다.")
-    @Test
-    fun getEmptyListIfOpenSourceNotExists() {
-        // given
-
-        // when
-        val openSources = openSourceService.getOpenSources()
-
-        // then
-        assertThat(openSources)
-            .hasSize(0)
     }
 }
