@@ -23,12 +23,14 @@ class LicenseService(
     @Transactional
     fun addLicenses(openSourceVersion: OpenSourceVersion, licenseDtos: List<LicenseAddRequestDto>): List<License> {
         try {
-            val licenses = licenseDtos.map { licenseDto ->
-                val path = "/${openSourceVersion.openSource.name}_${openSourceVersion.openSource.id}/${openSourceVersion.version}/${licenseDto.file.originalFilename!!}"
-                val dst = File(storage, path)
-                FileUtil.uploadFile(licenseDto.file, dst, listOf(MediaType.TEXT_PLAIN))
-                License(openSourceVersion, licenseDto.type, path)
-            }
+            val licenses = licenseDtos
+                .sortedBy { it.type }
+                .map { licenseDto ->
+                    val path = "/${openSourceVersion.openSource.name}_${openSourceVersion.openSource.id}/${openSourceVersion.version}/${licenseDto.file.originalFilename!!}"
+                    val dst = File(storage, path)
+                    FileUtil.uploadFile(licenseDto.file, dst, listOf(MediaType.TEXT_PLAIN))
+                    License(openSourceVersion, licenseDto.type, path)
+                }
             licenseRepository.saveAll(licenses)
             openSourceVersion.licenses.addAll(licenses)
             return licenses

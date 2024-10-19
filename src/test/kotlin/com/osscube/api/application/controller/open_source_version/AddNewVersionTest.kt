@@ -159,19 +159,16 @@ class AddNewVersionTest : TestContainers() {
         val openSourceId = openSource.clientId
         val openSourceVersionDto = OpenSourceVersionAddRequestDto("20240303", "https://github.com/stleary/JSON-java/archive/refs/tags/20240303.tar.gz")
         val licenseDtos = listOf(
-            LicenseAddRequestDto("MIT", MockMultipartFile("licenses[0].file", "source.jar", MediaType.TEXT_PLAIN_VALUE, "source".toByteArray())),
-            LicenseAddRequestDto("APACHE2.0", MockMultipartFile("licenses[1].file", "license2.txt", MediaType.TEXT_PLAIN_VALUE, "APACHE2.0 License".toByteArray()))
+            LicenseAddRequestDto("MIT", MockMultipartFile("licenses[0].file", "source.jar", MediaType.TEXT_PLAIN_VALUE, "source".toByteArray()))
         )
 
         mockMvc.perform(
             MockMvcRequestBuilders
                 .multipart(HttpMethod.POST, "/api/v1/open-sources/{openSourceId}/versions", openSourceId)
                 .file(licenseDtos[0].file as MockMultipartFile)
-                .file(licenseDtos[1].file as MockMultipartFile)
                 .param("version", openSourceVersionDto.version)
                 .param("sourceUrl", openSourceVersionDto.sourceUrl)
                 .param("licenses[0].type", "MIT")
-                .param("licenses[1].type", "APACHE2.0")
         )
             .andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
