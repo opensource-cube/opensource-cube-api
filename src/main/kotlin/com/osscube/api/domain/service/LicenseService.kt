@@ -1,7 +1,7 @@
 package com.osscube.api.domain.service
 
 import com.osscube.api.domain.dto.LicenseAddRequestDto
-import com.osscube.api.domain.dto.LicenseReadResponseDto
+import com.osscube.api.domain.dto.LicenseGetResponseDto
 import com.osscube.api.domain.exception.file.InvalidFileException
 import com.osscube.api.domain.exception.license.LicenseNotFoundException
 import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
@@ -50,11 +50,11 @@ class LicenseService(
         }
     }
 
-    fun getLicense(openSourceId: String, openSourceVersionId: String, licenseId: String): LicenseReadResponseDto {
+    fun getLicense(openSourceId: String, openSourceVersionId: String, licenseId: String): LicenseGetResponseDto {
         val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
         val openSourceVersion = openSourceVersionRepository.findByOpenSourceAndClientId(openSource, openSourceVersionId) ?: throw OpenSourceVersionNotFoundException()
         val license = licenseRepository.findByOpenSourceVersionAndClientId(openSourceVersion, licenseId) ?: throw LicenseNotFoundException()
         val content = FileUtil.readText(File(storage, license.path))
-        return LicenseReadResponseDto(license.clientId, license.type, content)
+        return LicenseGetResponseDto(license.clientId, license.type, content)
     }
 }

@@ -1,7 +1,7 @@
 package com.osscube.api.domain.service
 
 import com.osscube.api.domain.dto.LicenseAddRequestDto
-import com.osscube.api.domain.dto.LicenseGetResponseDto
+import com.osscube.api.domain.dto.LicenseTypeGetResponseDto
 import com.osscube.api.domain.dto.OpenSourceVersionAddNewVersionResponseDto
 import com.osscube.api.domain.dto.OpenSourceVersionAddRequestDto
 import com.osscube.api.domain.dto.OpenSourceVersionGetResponseDto
@@ -45,7 +45,7 @@ class OpenSourceVersionService(
     fun getVersion(openSourceId: String, openSourceVersionId: String): OpenSourceVersionGetResponseDto {
         val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
         val openSourceVersion = openSourceVersionRepository.findByOpenSourceAndClientId(openSource, openSourceVersionId) ?: throw OpenSourceVersionNotFoundException()
-        val licenses = openSourceVersion.licenses.map { LicenseGetResponseDto.of(it) }.sortedBy { it.type }
+        val licenses = openSourceVersion.licenses.map { LicenseTypeGetResponseDto.of(it) }.sortedBy { it.type }
         return OpenSourceVersionGetResponseDto.of(openSourceVersion.clientId, openSourceVersion.version, openSourceVersion.sourceUrl, licenses)
     }
 }
