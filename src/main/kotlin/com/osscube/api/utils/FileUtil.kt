@@ -16,4 +16,7 @@ object FileUtil {
         dst.mkdirs()
         multipartFile.transferTo(dst)
     }
+
+    fun readText(file: File) =
+        file.readText()
 }

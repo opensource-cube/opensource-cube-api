@@ -4,10 +4,10 @@ class OpenSourceVersionGetResponseDto(
     val id: String,
     val version: String,
     val sourceUrl: String?,
-    val licenses: List<LicenseGetResponseDto>
+    val licenses: List<LicenseTypeGetResponseDto>
 ) {
     companion object {
-        fun of(id: String, version: String, sourceUrl: String?, licenses: List<LicenseGetResponseDto>) =
+        fun of(id: String, version: String, sourceUrl: String?, licenses: List<LicenseTypeGetResponseDto>) =
             OpenSourceVersionGetResponseDto(id, version, sourceUrl, licenses)
     }
 }

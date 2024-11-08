@@ -13,7 +13,7 @@ import jakarta.persistence.UniqueConstraint
 
 @Entity
 @Table(
-    indexes = [Index(name = "license_idx", columnList = "clientId")],
+    indexes = [Index(name = "license_idx", columnList = "open_source_version_id, client_id")],
     uniqueConstraints = [UniqueConstraint(name = "license_unique_constraint", columnNames = ["open_source_version_id", "type"])]
 )
 class License(

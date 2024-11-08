@@ -1,11 +1,17 @@
 package com.osscube.api.domain.service
 
 import com.osscube.api.domain.dto.LicenseAddRequestDto
+import com.osscube.api.domain.dto.LicenseGetResponseDto
 import com.osscube.api.domain.exception.file.InvalidFileException
+import com.osscube.api.domain.exception.license.LicenseNotFoundException
+import com.osscube.api.domain.exception.open_source.OpenSourceNotFoundException
+import com.osscube.api.domain.exception.open_source_version.OpenSourceVersionNotFoundException
 import com.osscube.api.domain.exception.upper.FileException
 import com.osscube.api.domain.model.entity.License
 import com.osscube.api.domain.model.entity.OpenSourceVersion
 import com.osscube.api.domain.model.repository.LicenseRepository
+import com.osscube.api.domain.model.repository.OpenSourceRepository
+import com.osscube.api.domain.model.repository.OpenSourceVersionRepository
 import com.osscube.api.utils.FileUtil
 import java.io.File
 import org.springframework.beans.factory.annotation.Value
@@ -15,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class LicenseService(
+    private val openSourceRepository: OpenSourceRepository,
+    private val openSourceVersionRepository: OpenSourceVersionRepository,
     private val licenseRepository: LicenseRepository,
 
     @Value("\${application.storage}")
@@ -40,5 +48,13 @@ class LicenseService(
             root.deleteRecursively()
             throw InvalidFileException()
         }
+    }
+
+    fun getLicense(openSourceId: String, openSourceVersionId: String, licenseId: String): LicenseGetResponseDto {
+        val openSource = openSourceRepository.findByClientId(openSourceId) ?: throw OpenSourceNotFoundException()
+        val openSourceVersion = openSourceVersionRepository.findByOpenSourceAndClientId(openSource, openSourceVersionId) ?: throw OpenSourceVersionNotFoundException()
+        val license = licenseRepository.findByOpenSourceVersionAndClientId(openSourceVersion, licenseId) ?: throw LicenseNotFoundException()
+        val content = FileUtil.readText(File(storage, license.path))
+        return LicenseGetResponseDto(license.clientId, license.type, content)
     }
 }
